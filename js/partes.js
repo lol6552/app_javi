@@ -125,8 +125,9 @@ async function cargarListaPartes(termino = '', fechaDesde = '', fechaHasta = '')
                         <td><span class="amount">${p.total.toFixed(2)} €</span></td>
                         <td class="actions-column">
                             <div class="action-buttons">
-                                <button class="btn btn-small btn-pdf" title="Generar PDF"
-                                    onclick="window.open(API_BASE_URL + '/pdfs/parte/${p.id}', '_blank')">📄</button>
+                                <button class="action-button btn-pdf" onclick="descargarPDFParte(${p.id})" title="Descargar PDF">
+                                    📄 PDF
+                                </button>
                                 <a href="#/partes/editar/${p.id}" class="btn btn-small btn-edit" title="Editar">✏️</a>
                                 <button class="btn btn-small btn-delete" title="Eliminar"
                                     onclick="eliminarParte(${p.id}, '${p.numero}')"
@@ -182,6 +183,9 @@ function buscarPartes() {
  * Parámetros:
  *   id (number, opcional): ID del parte a editar
  */
+window.eliminarParte = eliminarParte;
+window.cambiarEstadoParte = cambiarEstadoParte;
+window.descargarPDFParte = descargarPDFParte;
 async function cargarFormularioParte(id = null) {
     const contenido = document.getElementById('content-area');
     const esEdicion = id !== null;
@@ -607,3 +611,51 @@ async function eliminarParte(id, numero) {
         mostrarNotificacion(respuesta.error || 'Error al eliminar', 'error');
     }
 }
+
+/**
+ * Descarga el PDF del parte.
+ * Si hay conexi�n, usa el backend. Si no, lo genera en el navegador.
+ *
+ * @param {number} id - ID del parte
+ */
+async function descargarPDFParte(id) {
+    const urlBackend = \${API_BASE_URL}/pdfs/parte/\\;
+    const check = await apiGet('/config');
+
+    if (!check.offline) {
+        window.open(urlBackend, '_blank');
+    } else {
+        mostrarNotificacion('? Generando PDF offline...', 'info');
+        try {
+            const respParte = await apiGet(\/partes/\\);
+            if (!respParte.ok || !respParte.data) {
+                mostrarNotificacion('Error: No se encuentran los datos del parte', 'error');
+                return;
+            }
+            const parte = Array.isArray(respParte.data) ? respParte.data[0] : respParte.data;
+
+            const respClientes = await apiGet('/clientes/');
+            const clientes = respClientes.data || [];
+            const cliente = clientes.find(c => c.id === parte.cliente_id) || {};
+
+            if (typeof generarPDFParteOffline === 'function') {
+                generarPDFParteOffline(parte, cliente);
+                mostrarNotificacion('PDF generado correctamente', 'success');
+            } else {
+                mostrarNotificacion('Error: Librer�a PDF no cargada', 'error');
+            }
+        } catch (e) {
+            console.error(e);
+            mostrarNotificacion('Error al generar PDF offline', 'error');
+        }
+    }
+}
+
+// Exportar funciones al scope global
+window.cargarListaPartes = cargarListaPartes;
+window.cargarFormularioParte = cargarFormularioParte;
+window.guardarParte = guardarParte;
+window.eliminarParte = eliminarParte;
+// window.cambiarEstadoParte = cambiarEstadoParte;
+window.descargarPDFParte = descargarPDFParte;
+

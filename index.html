@@ -145,7 +145,13 @@
     <!-- ================================================================== -->
     <!-- SCRIPTS DE LA APLICACIÓN -->
     <!-- ================================================================== -->
-    <!-- Orden de carga importante: config → api → app → módulos -->
+    <!-- Orden de carga importante: config → api -->
+    <!-- Librerías para PDF Offline -->
+    <script src="js/lib/jspdf.umd.min.js"></script>
+    <script src="js/lib/jspdf.plugin.autotable.min.js"></script>
+    <script src="js/pdf_offline.js"></script>
+
+    <!-- App Logic -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/sync.js"></script>
