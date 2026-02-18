@@ -40,10 +40,48 @@ async function apiGet(ruta) {
 
     } catch (error) {
         // Error de red (servidor no disponible, sin conexión, etc.)
-        console.error(`Error en GET ${ruta}:`, error);
+        console.log(`[OFFLINE] GET ${ruta} — sin conexión, devolviendo datos vacíos`);
+
+        // En modo offline, devolvemos datos vacíos en vez de un error.
+        // Así las listas muestran "No hay datos" en vez de "Error de conexión".
+        // El dashboard recibe un objeto especial con ceros.
+        if (ruta === '/dashboard') {
+            return {
+                ok: true,
+                offline: true,
+                data: {
+                    estadisticas: { total_clientes: 0, total_ofertas: 0, total_partes: 0, total_facturas: 0 },
+                    kpis: { total_mes_actual: 0, ticket_medio: 0 },
+                    estados_ofertas: { pendientes: 0, aceptadas: 0, rechazadas: 0, tasa_conversion: 0 },
+                    facturacion_mensual: { etiquetas: [], valores: [] },
+                    facturas_vencidas: []
+                }
+            };
+        }
+
+        // Para /config → devolvemos valores por defecto
+        if (ruta === '/config') {
+            return {
+                ok: true,
+                offline: true,
+                data: {
+                    iva_porcentaje: 21,
+                    formas_pago: ['transferencia', 'bizum', 'efectivo'],
+                    autonomo: {
+                        nombre: 'Javier Aranguren Meneses',
+                        dni: '78784784J',
+                        direccion: 'C/ Foz de Lumbier 1',
+                        cuenta: '89898 89898 8989'
+                    }
+                }
+            };
+        }
+
+        // Para listas (clientes, ofertas, partes, facturas) → array vacío
         return {
-            ok: false,
-            error: 'No se pudo conectar con el servidor. ¿Está encendido el backend?'
+            ok: true,
+            offline: true,
+            data: []
         };
     }
 }
