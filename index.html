@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión Empresarial</title>
+
+    <!-- Meta descripción para SEO -->
+    <meta name="description"
+        content="Sistema de gestión empresarial para autónomos - Clientes, ofertas, partes de trabajo y facturación">
+
+    <!-- Fuente Google Fonts: Inter para diseño moderno -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js para gráficas del dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Hoja de estilos principal -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- ================================================================== -->
+    <!-- CONTENEDOR PRINCIPAL -->
+    <!-- ================================================================== -->
+    <div class="app-container">
+
+        <!-- ============================================================== -->
+        <!-- SIDEBAR - Menú lateral de navegación -->
+        <!-- ============================================================== -->
+        <aside class="sidebar">
+            <!-- Logo y nombre de la empresa -->
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon">📊</span>
+                    <span class="logo-text">Gestión</span>
+                </div>
+            </div>
+
+            <!-- Menú de navegación -->
+            <nav class="sidebar-nav">
+                <ul>
+                    <!-- Dashboard -->
+                    <li>
+                        <a href="#/dashboard" class="nav-link" data-seccion="dashboard">
+                            <span class="nav-icon">🏠</span>
+                            <span class="nav-text">Dashboard</span>
+                        </a>
+                    </li>
+
+                    <!-- Clientes -->
+                    <li>
+                        <a href="#/clientes" class="nav-link" data-seccion="clientes">
+                            <span class="nav-icon">👥</span>
+                            <span class="nav-text">Clientes</span>
+                        </a>
+                    </li>
+
+                    <!-- Ofertas (activo - Fase 2) -->
+                    <li>
+                        <a href="#/ofertas" class="nav-link" data-seccion="ofertas">
+                            <span class="nav-icon">📝</span>
+                            <span class="nav-text">Ofertas</span>
+                        </a>
+                    </li>
+
+                    <!-- Partes de Trabajo (activo - Fase 3) -->
+                    <li>
+                        <a href="#/partes" class="nav-link" data-seccion="partes">
+                            <span class="nav-icon">🔧</span>
+                            <span class="nav-text">Partes</span>
+                        </a>
+                    </li>
+
+                    <!-- Facturas (activo - Fase 4) -->
+                    <li>
+                        <a href="#/facturas" class="nav-link" data-seccion="facturas">
+                            <span class="nav-icon">📄</span>
+                            <span class="nav-text">Facturas</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Pie del sidebar con info del usuario -->
+            <div class="sidebar-footer">
+                <!-- Indicador de estado de conexión con el backend -->
+                <div id="sync-indicator" class="sync-indicator" title="Estado de conexión">
+                    <span class="sync-online">🟢</span>
+                </div>
+
+                <!-- Botones de exportar/importar datos (para Netlify ↔ local) -->
+                <div class="sync-actions">
+                    <button class="btn-sync-action" onclick="exportarCola()"
+                        title="Exportar datos pendientes como JSON">
+                        📤 Exportar
+                    </button>
+                    <button class="btn-sync-action" onclick="importarCola()" title="Importar JSON con datos pendientes">
+                        📥 Importar
+                    </button>
+                </div>
+
+                <div class="user-info">
+                    <div class="user-avatar">JA</div>
+                    <div class="user-details">
+                        <span class="user-name">Javier Aranguren</span>
+                        <span class="user-role">Administrador</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ============================================================== -->
+        <!-- CONTENIDO PRINCIPAL -->
+        <!-- ============================================================== -->
+        <main class="main-content">
+
+            <!-- Header superior -->
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 class="page-title" id="page-title">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <span class="header-date" id="header-date"></span>
+                </div>
+            </header>
+
+            <!-- Contenedor de notificaciones (reemplaza los flash de Flask) -->
+            <div class="flash-messages" id="flash-messages"></div>
+
+            <!-- Área de contenido dinámico -->
+            <!-- Aquí se inyecta el HTML de cada página via JavaScript -->
+            <div class="content-area" id="content-area">
+                <div class="loading-spinner">
+                    <span>⏳ Cargando...</span>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- SCRIPTS DE LA APLICACIÓN -->
+    <!-- ================================================================== -->
+    <!-- Orden de carga importante: config → api → app → módulos -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/sync.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/clientes.js"></script>
+    <script src="js/ofertas.js"></script>
+    <script src="js/partes.js"></script>
+    <script src="js/facturas.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
